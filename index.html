@@ -1,0 +1,510 @@
+<html><head><base href="https://jsbin.com/"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBuddy AI - Learn with Fun!</title>
+    <!-- KaTeX and dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+    <!-- Marked and its KaTeX extension -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/lib/marked.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension@1.0.0/marked-katex.min.js"></script>
+
+    <!-- Added highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4CAF50;
+            --background: #f0f2f5;
+            --text: #2c3e50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 1rem;
+        }
+
+        .upload-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .camera-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 640px;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-capture {
+            background: var(--secondary);
+        }
+
+        .result-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .markdown-content {
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            padding: 1rem;
+        }
+
+        .markdown-content h1,
+        .markdown-content h2,
+        .markdown-content h3,
+        .markdown-content h4 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        .markdown-content h1 { font-size: 2em; }
+        .markdown-content h2 { font-size: 1.5em; }
+        .markdown-content h3 { font-size: 1.25em; }
+
+        .markdown-content code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(175,184,193,0.2);
+            border-radius: 6px;
+            font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+        }
+
+        .markdown-content pre code {
+            padding: 16px;
+            display: block;
+            overflow-x: auto;
+        }
+
+        .markdown-content blockquote {
+            padding: 0 1em;
+            color: #656d76;
+            border-left: 0.25em solid #d0d7de;
+            margin: 1em 0;
+        }
+
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+
+        .markdown-content table th,
+        .markdown-content table td {
+            padding: 6px 13px;
+            border: 1px solid #d0d7de;
+        }
+
+        .markdown-content table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+
+        .question-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .question-input-container {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .question-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--primary);
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .question-input:focus {
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+        }
+
+        .btn-ask {
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+        }
+
+        #answerOutput {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #answerOutput.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 1em 0;
+        }
+
+        .katex {
+            font-size: 1.1em;
+        }
+
+        .katex-inline {
+            padding: 0 0.2em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <svg class="logo" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="90" fill="#6C63FF" />
+                <path d="M60,80 Q100,120 140,80" stroke="white" stroke-width="8" fill="none" />
+                <circle cx="70" cy="60" r="15" fill="white" />
+                <circle cx="130" cy="60" r="15" fill="white" />
+            </svg>
+            <h1>StudyBuddy AI</h1>
+            <p>Upload your study material and let AI explain it in a fun way!</p>
+        </header>
+
+        <div class="upload-section">
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <button class="btn" onclick="document.getElementById('fileInput').click()">
+                Upload Image
+            </button>
+            <p>or</p>
+            <button class="btn" onclick="startCamera()">Use Camera</button>
+        </div>
+
+        <div class="camera-section" style="display: none;">
+            <video id="video" autoplay playsinline></video>
+            <button class="btn btn-capture" onclick="captureImage()">Take Photo</button>
+        </div>
+
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Analyzing your content...</p>
+        </div>
+
+        <div class="result-section" style="display: none;">
+            <img id="outputImage">
+            <div id="outputDescription" class="markdown-content"></div>
+            <div class="question-section">
+                <h3>Ask a Question</h3>
+                <div class="question-input-container">
+                    <input type="text" id="questionInput" placeholder="Ask anything about this topic..." class="question-input">
+                    <button class="btn btn-ask" onclick="askQuestion()">Ask</button>
+                </div>
+                <div id="answerOutput" class="markdown-content"></div>
+            </div>
+            <button class="btn" onclick="location.reload()">Try Another</button>
+        </div>
+    </div>
+
+    <script>
+        let stream = null;
+        let descriptionText = '';
+        let currentExplanation = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize marked with KaTeX extension
+            const markedKatexExtension = window.markedKatex; // Changed from window.markedKatexExtension
+            marked.use(
+                markedKatexExtension({
+                    throwOnError: false,
+                    displayMode: true,
+                    output: 'html'
+                })
+            );
+            marked.setOptions({
+                breaks: true,
+                gfm: true
+            });
+
+            // Add event listener for question input
+            const questionInput = document.getElementById('questionInput');
+            questionInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    askQuestion();
+                }
+            });
+        });
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment' 
+                    } 
+                });
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                document.querySelector('.camera-section').style.display = 'flex';
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                alert('Could not access camera. Please make sure you have granted permission.');
+            }
+        }
+
+        async function captureImage() {
+            const video = document.getElementById('video');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            const imageData = canvas.toDataURL('image/jpeg');
+            processImage(imageData);
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            document.querySelector('.camera-section').style.display = 'none';
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processImage(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function processImage(imageData) {
+            document.querySelector('.loading').style.display = 'block';
+            const resultSection = document.querySelector('.result-section');
+            const outputImage = document.getElementById('outputImage');
+            const outputDescription = document.getElementById('outputDescription');
+
+            outputImage.src = imageData;
+            resultSection.style.display = 'block';
+
+            const base64Image = imageData.split(',')[1];
+
+            try {
+                const response = await analyzeImage(base64Image);
+                const hinglishResponse = await convertToHinglish(response);
+                currentExplanation = hinglishResponse; // Store the explanation
+                outputDescription.innerHTML = marked.parse(hinglishResponse);
+                document.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                outputDescription.textContent = 'Oops! Something went wrong. Please try again.';
+            } finally {
+                document.querySelector('.loading').style.display = 'none';
+            }
+        }
+
+        async function analyzeImage(base64Image) {
+            const requestBody = {
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are an expert educational assistant. Analyze the study material and explain it in a clear, structured way using Markdown formatting. Include examples, bullet points, and code snippets where relevant. Make the explanation visually appealing and easy to understand. Use headings, lists, tables, and other Markdown elements to organize the information effectively. For mathematical expressions, use LaTeX notation enclosed in dollar signs for inline math ($...$) or double dollar signs for display math ($$...$$). For example: $E=mc^2$ or $$\\sum_{i=1}^n i = \\frac{n(n+1)}{2}$$"
+                    },
+                    {
+                        "role": "user",
+                        "content": [
+                            { "type": "text", "text": "Analyze this study material and explain it in a simple way using Markdown formatting." },
+                            { "type": "image_url", "image_url": { "url": `data:image/jpeg;base64,${base64Image}` } }
+                        ]
+                    }
+                ],
+                "model": "openai",
+                "seed": Math.floor(Math.random() * 1000000)
+            };
+
+            const response = await fetch('https://text.pollinations.ai/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            return await response.text();
+        }
+
+        async function convertToHinglish(text) {
+            const requestBody = {
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "Convert the following text to Hinglish (Hindi-English mix) in a fun and engaging way. Add some humor and emojis to make it more interesting for students."
+                    },
+                    {
+                        "role": "user",
+                        "content": text
+                    }
+                ],
+                "model": "openai",
+                "seed": Math.floor(Math.random() * 1000000)
+            };
+
+            const response = await fetch('https://text.pollinations.ai/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+
+            return await response.text();
+        }
+
+        async function askQuestion() {
+            const questionInput = document.getElementById('questionInput');
+            const answerOutput = document.getElementById('answerOutput');
+            const question = questionInput.value.trim();
+            
+            if (!question) return;
+            
+            answerOutput.innerHTML = '<div class="loading-spinner"></div>';
+            answerOutput.classList.add('show');
+            
+            const requestBody = {
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": "You are a helpful educational assistant. Answer questions about the study material in a clear and engaging Hinglish style with emojis. Base your answers on the context provided. Use Markdown formatting to make the answer visually appealing."
+                    },
+                    {
+                        "role": "user",
+                        "content": `Context: ${currentExplanation}\n\nQuestion: ${question}`
+                    }
+                ],
+                "model": "openai",
+                "seed": Math.floor(Math.random() * 1000000)
+            };
+
+            try {
+                const response = await fetch('https://text.pollinations.ai/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const answer = await response.text();
+                answerOutput.innerHTML = marked.parse(answer);
+                
+                answerOutput.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightBlock(block);
+                });
+            } catch (error) {
+                answerOutput.innerHTML = 'Sorry, I could not process your question. Please try again.';
+            }
+        }
+    </script>
+</body>
+</html>
